@@ -5,7 +5,6 @@ const path = require('path');
 const generateUniqueId = require('generate-unique-id');
 
 const app = express();
-
 const PORT = process.env.PORT || 8675;
 
 app.use(express.urlencoded({ extended: true }));
@@ -37,21 +36,29 @@ app.post('/api/notes', (req, res) => {
   notesArray.push(newNotePost);
 
   fs.writeFile('./db/db.json', JSON.stringify(notesArray), (err) =>
-  err ? console.log(err) : console.log(`successfully saved note: ${newNotePost.id}`));
+    err ? console.log(err) : console.log(`successfully saved note: ${newNotePost.id}`));
   res.json(newNotePost);
 });
 
 app.get('api/notes/:id', (req, res) => {
   const userCoice = req.params.id;
   res.json(userCoice);
-  // for (let i = 0; i < notesArray.length; i++) {
-  //   if (userCoice === notesArray[i].id) {
-  //     return res.json(notesArray[i]);
-  //   }
-  // }
 });
 
 
+app.delete('/api/notes/:id', (req, res) => {
+  const deleteChoice = req.params.id;
+  for (i = 0; i < notesArray.length; i++) {
+    if (deleteChoice === notesArray[i].id) {
+      notesArray.splice(i, 1);
+    }
+  }
+  fs.writeFile('./db/db.json', JSON.stringify(notesArray), (err) =>
+    err ? console.log(err) : console.log('success'));
+  res.json(notesArray);
+  console.log(`Note ${deleteChoice} successfully deleted!`);
+});
+
 app.listen(PORT, () => {
-    console.log(`App listening on PORT: ${PORT}`);
-  });
+  console.log(`App listening on PORT: ${PORT}`);
+});
