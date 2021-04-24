@@ -18,6 +18,7 @@ app.use(express.static('public'));
 // Assign an array to JSON file
 let notesArray = noteDatabase;
 
+
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
 app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, '/public/notes.html')));
 
@@ -36,8 +37,18 @@ app.post('/api/notes', (req, res) => {
   notesArray.push(newNotePost);
 
   fs.writeFile('./db/db.json', JSON.stringify(notesArray), (err) =>
-  err ? console.log(err) : console.log('successfully saved note.'));
+  err ? console.log(err) : console.log(`successfully saved note: ${newNotePost.id}`));
   res.json(newNotePost);
+});
+
+app.get('api/notes/:id', (req, res) => {
+  const userCoice = req.params.id;
+  res.json(userCoice);
+  // for (let i = 0; i < notesArray.length; i++) {
+  //   if (userCoice === notesArray[i].id) {
+  //     return res.json(notesArray[i]);
+  //   }
+  // }
 });
 
 
